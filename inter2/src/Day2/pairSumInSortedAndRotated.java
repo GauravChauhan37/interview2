@@ -9,11 +9,13 @@ public class pairSumInSortedAndRotated {
 		if (high == low)
 			return low;
 		int mid = (low + high) / 2;
-		if (arr[mid - 1] < arr[mid] && arr[mid] > arr[mid + 1]) {
+		int prev = arr[(mid - 1 + arr.length) % arr.length];
+		int next = arr[(mid + 1) % arr.length];
+		if (prev < arr[mid] && arr[mid] > next) {
 			return mid;
-		} else if (arr[mid] < arr[mid + 1] && arr[mid] < arr[low]) {
+		} else if (arr[mid] < arr[mid + 1] && arr[mid] < arr[0]) {
 			return pivotPoint(arr, low, mid - 1);
-		} else if (arr[mid] < arr[mid + 1] && arr[mid] > arr[high]) {
+		} else if (arr[mid] < arr[mid + 1] && arr[mid] > arr[arr.length-1]) {
 			return pivotPoint(arr, mid + 1, high);
 		} else {
 			return -1;
@@ -22,26 +24,26 @@ public class pairSumInSortedAndRotated {
 
 	public void search(int[] arr, int targetSum) {
 		int pivot = pivotPoint(arr, 0, arr.length - 1);
-		int left = pivot;
-		int right = pivot + 1;
+		System.out.println(pivot);
+		int left = pivot + 1;
+		int right = pivot;
 		int leftSum = 0;
 		int rightSum = 0;
-		while (left >= 0 || right < arr.length) {// multiple break conditions
-			if (left >= 0) {
-				leftSum = arr[left];
-			}
-			if (right < arr.length) {
-				rightSum = arr[right];
-			}
+		int count = 0;
+		while (count < arr.length - 1) {
+			leftSum = arr[left];
+			rightSum = arr[right];
 			if (leftSum + rightSum == targetSum) {
 				System.out.println(leftSum + " " + rightSum);
-				return;
-			} else if (leftSum + rightSum < targetSum) {
-				if (right < arr.length)
-					right++;
+				left = (left + 1) % arr.length;
+				right = (right - 1 + arr.length) % arr.length;
+				count += 2;
 			} else if (leftSum + rightSum > targetSum) {
-				if (left >= 0)
-					left--;
+				right = (right - 1 + arr.length) % arr.length;
+				count++;
+			} else if (leftSum + rightSum < targetSum) {
+				left = (left + 1) % arr.length;
+				count++;
 			}
 		}
 	}
